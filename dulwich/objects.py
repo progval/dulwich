@@ -728,6 +728,7 @@ class Tag(ShaFile):
         "_object_class",
         "_tag_time",
         "_tag_timezone",
+        "_tag_timezone_text",
         "_tagger",
         "_message",
         "_signature",
@@ -826,7 +827,11 @@ class Tag(ShaFile):
                 (
                     self._tagger,
                     self._tag_time,
-                    (self._tag_timezone, self._tag_timezone_neg_utc),
+                    (
+                        self._tag_timezone,
+                        self._tag_timezone_neg_utc,
+                        self._tag_timezone_text,
+                    ),
                 ) = parse_time_entry(value)
             elif field is None:
                 if value is None:
@@ -1265,19 +1270,19 @@ def parse_time_entry(value):
     Raises:
       ObjectFormatException in case of parsing error (malformed
       field date)
-    Returns: Tuple of (author, time, (timezone, timezone_neg_utc))
+    Returns: Tuple of (author, time, (timezone, timezone_neg_utc, timezone_text))
     """
     m = _TIME_ENTRY_RE.match(value)
     if not m:
         raise ObjectFormatException("foo")
 
     person = m.group("person")
-    timetext = m.group("time")
-    timezonetext = m.group("timezone")
-    time = int(timetext)
-    timezone, timezone_neg_utc = parse_timezone(timezonetext)
+    time_text = m.group("time")
+    timezone_text = m.group("timezone")
+    time = int(time_text)
+    timezone, timezone_neg_utc = parse_timezone(timezone_text)
 
-    return person, time, (timezone, timezone_neg_utc)
+    return person, time, (timezone, timezone_neg_utc, timezone_text)
 
 
 def parse_commit(chunks):
@@ -1291,8 +1296,8 @@ def parse_commit(chunks):
     parents = []
     extra = []
     tree = None
-    author_info = (None, None, (None, None))
-    commit_info = (None, None, (None, None))
+    author_info = (None, None, (None, None, None))
+    commit_info = (None, None, (None, None, None))
     encoding = None
     mergetag = []
     message = None
@@ -1347,6 +1352,8 @@ class Commit(ShaFile):
         "_author_time",
         "_author_timezone",
         "_commit_timezone",
+        "_author_timezone_text",
+        "_commit_timezone_text",
         "_author",
         "_committer",
         "_tree",
@@ -1387,12 +1394,20 @@ class Commit(ShaFile):
         (
             self._author,
             self._author_time,
-            (self._author_timezone, self._author_timezone_neg_utc),
+            (
+                self._author_timezone,
+                self._author_timezone_neg_utc,
+                self._author_timezone_text,
+            ),
         ) = author_info
         (
             self._committer,
             self._commit_time,
-            (self._commit_timezone, self._commit_timezone_neg_utc),
+            (
+                self._commit_timezone,
+                self._commit_timezone_neg_utc,
+                self._commit_timezone_text
+            ),
         ) = commit_info
 
     def check(self):

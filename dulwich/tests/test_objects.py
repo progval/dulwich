@@ -719,12 +719,14 @@ class CommitParseTests(ShaFileCheckTests):
         expected_identity = b'Jane Doe <jdoe@example.org>'
         expected_time = -12345
         expected_timezone = +1 * 60 * 60
+        expected_timezone_text = b'+0100'
         commit = Commit.from_string(self.make_commit_text(author=author_line))
 
         # The commit parses properly
         self.assertEqual(commit.author, expected_identity)
         self.assertEqual(commit.author_time, expected_time)
         self.assertEqual(commit.author_timezone, expected_timezone)
+        self.assertEqual(commit._author_timezone_text, expected_timezone_text)
 
         commit.check()
 
@@ -735,12 +737,14 @@ class CommitParseTests(ShaFileCheckTests):
         expected_identity = b'Jane Doe <jdoe@example.org>'
         expected_time = 12345
         expected_timezone = +7 * 60 * 60
+        expected_timezone_text = b'--700'
         commit = Commit.from_string(self.make_commit_text(author=author_line))
 
         # The commit parses properly
         self.assertEqual(commit.author, expected_identity)
         self.assertEqual(commit.author_time, expected_time)
         self.assertEqual(commit.author_timezone, expected_timezone)
+        self.assertEqual(commit._author_timezone_text, expected_timezone_text)
 
         commit.check()
 
@@ -751,12 +755,14 @@ class CommitParseTests(ShaFileCheckTests):
         expected_identity = b'Geoff Cant <nem@lisp.geek.nz>'
         expected_time = 1170648114
         expected_timezone = -720 * 60 * 60
+        expected_timezone_text = b'-72000'
         commit = Commit.from_string(self.make_commit_text(author=author_line))
 
         # The commit parses properly
         self.assertEqual(commit.author, expected_identity)
         self.assertEqual(commit.author_time, expected_time)
         self.assertEqual(commit.author_timezone, expected_timezone)
+        self.assertEqual(commit._author_timezone_text, expected_timezone_text)
 
         commit.check()
 
@@ -767,12 +773,14 @@ class CommitParseTests(ShaFileCheckTests):
         expected_identity = b'Pl\xc3\xa1cidoMonteiro <Pl\xc3\xa1cidoMonteiro@.(none)>'
         expected_time = 1380083482
         expected_timezone = +2 * 60
+        expected_timezone_text = b'+02'
         commit = Commit.from_string(self.make_commit_text(author=author_line))
 
         # The commit parses properly
         self.assertEqual(commit.author, expected_identity)
         self.assertEqual(commit.author_time, expected_time)
         self.assertEqual(commit.author_timezone, expected_timezone)
+        self.assertEqual(commit._author_timezone_text, expected_timezone_text)
 
         commit.check()
 
@@ -783,12 +791,14 @@ class CommitParseTests(ShaFileCheckTests):
         expected_identity = b'applehq <applehq@203d044e-caa7-11dc-91ec-67e1038599e7>'
         expected_time = 1205785941
         expected_timezone = 0
+        expected_timezone_text = b'0000'
         commit = Commit.from_string(self.make_commit_text(author=author_line))
 
         # The commit parses properly
         self.assertEqual(commit.author, expected_identity)
         self.assertEqual(commit.author_time, expected_time)
         self.assertEqual(commit.author_timezone, expected_timezone)
+        self.assertEqual(commit._author_timezone_text, expected_timezone_text)
 
         commit.check()
 
@@ -800,12 +810,14 @@ class CommitParseTests(ShaFileCheckTests):
         expected_identity = b'acpmasquerade <d@picovico.com>'
         expected_time = 1460127297
         expected_timezone = +6 * 60 * 60 + 15 * 60
+        expected_timezone_text = b'+0575'
         commit = Commit.from_string(self.make_commit_text(author=author_line))
 
         # The commit parses properly
         self.assertEqual(commit.author, expected_identity)
         self.assertEqual(commit.author_time, expected_time)
         self.assertEqual(commit.author_timezone, expected_timezone)
+        self.assertEqual(commit._author_timezone_text, expected_timezone_text)
 
         commit.check()
 
@@ -821,12 +833,14 @@ class CommitParseTests(ShaFileCheckTests):
         )
         expected_time = 1197475547
         expected_timezone = -5 * 60 * 60
+        expected_timezone_text = b'-0500'
         commit = Commit.from_string(self.make_commit_text(author=author_line))
 
         # The commit parses properly
         self.assertEqual(commit.author, expected_identity)
         self.assertEqual(commit.author_time, expected_time)
         self.assertEqual(commit.author_timezone, expected_timezone)
+        self.assertEqual(commit._author_timezone_text, expected_timezone_text)
 
         # But the check fails because the author identity is bogus
         with self.assertRaises(ObjectFormatException):
@@ -839,12 +853,14 @@ class CommitParseTests(ShaFileCheckTests):
         expected_identity = b'kapil.foss@gmail.com'
         expected_time = 1297013737
         expected_timezone = -5 * 60 * 60
+        expected_timezone_text = b'-0500'
         commit = Commit.from_string(self.make_commit_text(author=author_line))
 
         # The commit parses properly
         self.assertEqual(commit.author, expected_identity)
         self.assertEqual(commit.author_time, expected_time)
         self.assertEqual(commit.author_timezone, expected_timezone)
+        self.assertEqual(commit._author_timezone_text, expected_timezone_text)
 
         # But the check fails because the author identity is bogus
         with self.assertRaises(ObjectFormatException):
